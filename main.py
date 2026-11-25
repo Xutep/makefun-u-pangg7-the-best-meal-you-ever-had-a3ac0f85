@@ -19,14 +19,24 @@ SENTENCE = (
 MAX_CHARS = 200
 
 
-def main() -> None:
-    text = SENTENCE.strip()
+def validate(text: str) -> str:
+    """Hold the sentence to the gate: 1-200 chars, one sentence, no
+    stray whitespace or line breaks, so what the program writes is
+    exactly what the judge reads."""
+    text = text.strip()
     if not 1 <= len(text) <= MAX_CHARS:
         raise SystemExit(
             f"sentence is {len(text)} characters, must be 1-{MAX_CHARS}"
         )
     if text.count(".") != 1 or not text.endswith("."):
         raise SystemExit("entry must be exactly one sentence")
+    if "\n" in text or "\r" in text or "  " in text:
+        raise SystemExit("entry must be a single clean line")
+    return text
+
+
+def main() -> None:
+    text = validate(SENTENCE)
     os.makedirs("/output", exist_ok=True)
     with open("/output/entry.txt", "w", encoding="utf-8", newline="") as f:
         f.write(text)
